@@ -25,12 +25,10 @@ function createCard(elem, callback) {
   return cardElement;
 }
 
-initialCards.forEach(function (item) {
-  cardElement = createCard(item, deleteCard);
+initialCards.forEach( (item) => {
+  const cardElement = createCard(item, (evt) => {
+    const card = evt.target.closest(".card");
+    card.remove();
+  });
   placesList.append(cardElement);
 });
-
-function deleteCard(evt) {
-  const card = evt.target.closest(".card");
-  card.remove();
-}
