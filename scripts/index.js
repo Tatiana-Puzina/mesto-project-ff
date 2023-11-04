@@ -25,7 +25,7 @@ function createCard(elem, callback) {
   return cardElement;
 }
 
-initialCards.forEach( (item) => {
+initialCards.forEach((item) => {
   const cardElement = createCard(item, (evt) => {
     const card = evt.target.closest(".card");
     card.remove();
