@@ -1,19 +1,23 @@
 import {
   popupTypIimage,
+  newImageCard,
+  newNameCard,
   cardTemplate,
   nameInput,
   jobInput,
   popupTypeEdit,
+  editProfileName,
+  editProfileDescription,
 } from "../scripts/index.js";
 import { openModal, closeModal } from "./modal.js";
 
-export function createCard(elem, onDelete, onLike, onImg) {
+export function createCard(cardData, onDelete, onLike, onImg) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector(".card__image");
 
-  cardImage.src = elem.link;
-  cardImage.alt = elem.name;
-  cardElement.querySelector(".card__title").textContent = elem.name;
+  cardImage.src = cardData.link;
+  cardImage.alt = cardData.name;
+  cardElement.querySelector(".card__title").textContent = cardData.name;
   cardElement
     .querySelector(".card__delete-button")
     .addEventListener("click", onDelete);
@@ -38,15 +42,15 @@ export function handleLikeButton(evt) {
 
 export function handleOpenImg(evt) {
   const image = evt.target;
-  popupTypIimage.querySelector(".popup__image").src = image.src;
-  popupTypIimage.querySelector(".popup__caption").textContent = image.alt;
+  newImageCard.src = image.src;
+  newNameCard.textContent = image.alt;
   openModal(popupTypIimage);
 }
 
-export function handleFormSubmit(evt) {
+export function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
-  document.querySelector(".profile__title").textContent = nameInput.value;
-  document.querySelector(".profile__description").textContent = jobInput.value;
+  editProfileName.textContent = nameInput.value;
+  editProfileDescription.textContent = jobInput.value;
   closeModal(popupTypeEdit);
 }
