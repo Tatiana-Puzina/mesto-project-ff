@@ -139,7 +139,7 @@ function onDeleteMyCard(evt) {
   deleteCard(cardId).then(() => {
     deleteCardBuffer.remove();
     closeModal(popupTypeDelete);
-  });
+  }).catch((err) => console.log(err));
 }
 
 //редактирование имени и информации о себе
@@ -166,8 +166,9 @@ function handleAvatarFormSubmit(evt) {
       `background-image: url(${data.avatar});`
     );
     closeModal(popupTypeNewAvatar);
-  });
-  buttonSave.textContent = "Сохранить";
+  })
+  .catch((err) => console.log(err))
+  .finally(() => (buttonSave.textContent = "Сохранить"));
 }
 
 enableValidation(validationConfig);
@@ -192,6 +193,6 @@ Promise.all([getInitialCards(), getInitialUser()]).then(
         responseInitialUser._id
       );
       placesList.append(cardElement);
-    });
+    }).catch((err) => console.log(err))
   }
 );
