@@ -1,5 +1,4 @@
 //Валидация инпутов
-
 const showInputError = (
   formElement,
   inputElement,
@@ -18,22 +17,16 @@ const hideInputError = (formElement, inputElement, validationConfig) => {
 };
 
 const isValid = (formElement, inputElement, validationConfig) => {
-  const regExp = validationConfig.regExp;
-  const valid = inputElement.classList.contains(
-    validationConfig.customValidation
-  )
-    ? regExp.test(inputElement.value)
-    : inputElement.validity.valid;
-  const validationMessage = inputElement.classList.contains(
-    validationConfig.customValidation
-  )
-    ? inputElement.dataset.error
-    : inputElement.validationMessage;
-  if (!valid) {
+  if (inputElement.validity.patternMismatch) {
+    inputElement.setCustomValidity(inputElement.dataset.error);
+  } else {
+    inputElement.setCustomValidity("");
+  }
+  if (!inputElement.validity.valid) {
     showInputError(
       formElement,
       inputElement,
-      validationMessage,
+      inputElement.validationMessage,
       validationConfig
     );
   } else {
@@ -42,17 +35,10 @@ const isValid = (formElement, inputElement, validationConfig) => {
 };
 
 const toggleButtonState = (inputList, buttonElement, validationConfig) => {
-  let valid = true;
-  inputList.forEach((inputElement) => {
-    if (valid) {
-      if (inputElement.classList.contains(validationConfig.customValidation)) {
-        valid = validationConfig.regExp.test(inputElement.value);
-      } else {
-        valid = inputElement.validity.valid;
-      }
-    }
-  });
-  if (!valid) {
+  const isValid = inputList.every(
+    (inputElement) => inputElement.validity.valid
+  );
+  if (!isValid) {
     buttonElement.disabled = true;
     buttonElement.classList.add(validationConfig.inactiveButtonClass);
   } else {
@@ -82,17 +68,16 @@ export const enableValidation = (validationConfig) => {
   });
 };
 
-export const clearValidation = (profileForm, validationConfig) => {
+export const clearValidation = (formElement, validationConfig) => {
   const inputList = Array.from(
-    profileForm.querySelectorAll(validationConfig.inputSelector)
+    formElement.querySelectorAll(validationConfig.inputSelector)
   );
-  const buttonElement = profileForm.querySelector(
+  const buttonElement = formElement.querySelector(
     validationConfig.submitButtonSelector
   );
+  formElement.querySelector("form").reset();
   toggleButtonState(inputList, buttonElement, validationConfig);
-  inputList.forEach((inputElement) => {
-    if (validationConfig.data.hasOwnProperty(inputElement.name)) {
-      inputElement.value = validationConfig.data[inputElement.name];
-    }
-  });
+  inputList.forEach((inputElement) =>
+    hideInputError(formElement, inputElement, validationConfig)
+  );
 };
